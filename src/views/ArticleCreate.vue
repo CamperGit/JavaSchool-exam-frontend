@@ -11,22 +11,21 @@
 
 <script>
 import {ref} from "vue";
-import ArticleService from "../services/articleService"
+import {useStore} from "vuex"
 
 export default {
   name: "ArticleCreate",
   setup() {
+    const store = useStore();
     const zipInput = ref(null);
     const loadedFile = ref(null);
 
     const handleFileUpload = () => {
-      //file.value = ;
       loadedFile.value = zipInput.value.files[0];
-      console.log(loadedFile.value)
     }
 
     const submitFile = () => {
-      ArticleService.createArticle(loadedFile.value, 1);
+      store.dispatch('articles/createArticleFromZip', {file : loadedFile.value, sectionId : 1})
     }
 
     return {

@@ -1,12 +1,11 @@
 import { createStore } from 'vuex'
 
+import articles from './articles'
+
 export default createStore({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
   modules: {
-  }
+    articles,
+  },
+
+  strict: process.env.DEBUGGING
 })
