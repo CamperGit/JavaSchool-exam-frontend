@@ -10,11 +10,6 @@ export async function createArticleFromZip({commit}, {file, sectionId}) {
     }
 }
 
-export async function getAllSections({commit}) {
-    const sections = await SectionService.getAllSections();
-    commit('setSections', sections);
-}
-
 export async function loadArticlesPage({commit}, {pageNumber, sectionId}) {
     let page;
     if (sectionId) {
@@ -24,3 +19,16 @@ export async function loadArticlesPage({commit}, {pageNumber, sectionId}) {
     }
     commit('addArticlesPage', {pageNumber, page})
 }
+
+export async function getAllSections({commit}) {
+    const sections = await SectionService.getAllSections();
+    commit('setSections', sections);
+}
+
+export async function createNewSectionByName({commit}, name) {
+    const section = await SectionService.createNewSectionByName(name);
+    if (section) {
+        commit('addNewSection', section);
+    }
+}
+

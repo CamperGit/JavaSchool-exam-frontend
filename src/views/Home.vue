@@ -12,7 +12,7 @@
               <div class="pb-sm"><span class="text-caption" >{{getArticleText(article)}}</span><br></div>
               <div class="row justify-content-between">
                 <div style="width: 250px"><span>Читать подробнее...</span></div>
-                <div style="width: 90px; margin-right: 15px"><span>{{formatDate(new Date(article.dateOfCreation))}}</span></div>
+                <div style="width: 156px; margin-right: 15px"><span>{{formatDate(new Date(article.dateOfCreation))}}</span></div>
               </div>
             </div>
           </div>
@@ -30,7 +30,7 @@
           </div>
         </template>
       </div>
-      <div id="sections-container" :style="'height:' + (34 + 18 + 56 * sections.length) + 'px'"
+      <div id="sections-container" :style="'height:' + (34 + 18 + 30 + 40 * sections.length) + 'px'"
            class="ma-none pa-none bg-none" style="padding-left: 0; padding-right: 0">
         <div class="pa-none list-group-flush">
           <ul id="section-list" class="list-group pa-none">
@@ -52,8 +52,8 @@
       <div class="modal-dialog modal-dialog-centered modal-lg"  >
         <div class="modal-content" >
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">{{articleDialogTitle}}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h5 class="modal-title" id="exampleModalLabel" style="margin-right: 45px">{{articleDialogTitle}}</h5>
+            <button id="close-modal-button" type="button" class="btn-close btn-lg"  data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" style="text-align: left">
             <div>{{articleDialogText}}</div>
@@ -86,7 +86,6 @@ export default {
     const currentPage = computed( () => {
       const map = store.state.news.articlesPages;
       const page = map.get(pageNumber.value);
-      console.log(page)
       return page;
     });
     const articleDialogTitle = ref('');
@@ -99,11 +98,14 @@ export default {
       let mm = date.getMonth() + 1;
       if (mm < 10) mm = '0' + mm;
       let yy = date.getFullYear();
-      return dd + '.' + mm + '.' + yy;
+      let hours = date.getHours();
+      if (hours < 10) hours = '0' + hours;
+      let minutes = date.getMinutes();
+      if (minutes < 10) minutes = '0' + minutes;
+      return dd + '.' + mm + '.' + yy + ' ' + hours + ':' + minutes ;
     }
 
     const openReadArticleDialog = (article) => {
-      console.log(article)
       articleDialogTitle.value = article.title;
       articleDialogText.value = article.text;
       articleDialogDate.value = formatDate(new Date(article.dateOfCreation));
@@ -215,6 +217,9 @@ export default {
   padding-bottom: 8px ;
 }
 
+#close-modal-button {
+  margin-right: -65px;
+}
 
 .select-type-news {
   min-height: 10px;
@@ -252,12 +257,6 @@ export default {
 
 .container-base {
   max-width: 1600px;
-}
-
-.separator {
-  margin: 0.5rem 15px;
-  border: 0;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 </style>

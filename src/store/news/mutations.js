@@ -9,3 +9,7 @@ export function clearArticlesMap(state) {
 export function setSections(state, sections) {
   state.sections = sections;
 }
+
+export function addNewSection(state, section) {
+  state.sections.push(section);
+}

@@ -10,6 +10,20 @@ class SectionService {
             return [];
         }
     }
+
+    async createNewSectionByName(name) {
+        try {
+            const {data} = await axios.post('/sections', {}, {
+                params: {
+                    name,
+                },
+            });
+            return data;
+        } catch (e) {
+            console.log(e)
+            return null;
+        }
+    }
 }
 
 export default new SectionService();
