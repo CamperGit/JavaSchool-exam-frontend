@@ -87,9 +87,9 @@ export default {
     }
 
     watch(selectedSection, async (val) => {
+      store.commit('news/clearArticlesMap')
       if (val.name === 'all') {
         await store.dispatch('news/loadArticlesPage', {pageNumber : pageNumber.value})
-        console.log(val)
       } else {
         await store.dispatch('news/loadArticlesPage', {pageNumber : pageNumber.value, sectionId : val.sectionId})
       }
