@@ -25,8 +25,8 @@ export default {
     const getArticles = async () => {
       try {
         const data = await axios.get("/articles", {})
-        console.log('service ' + data)
-        console.log('service ' + data.data)
+        console.log(data)
+        console.log(data.data)
         return data.data
       } catch (e) {
         console.error(e);

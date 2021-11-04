@@ -1,0 +1,116 @@
+body {
+  font-family: 'Play', sans-serif;
+  background-color: red;
+}
+
+.fix-pa {
+  padding: 15px 15px;
+}
+
+.fix-px {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.fix-py {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.fix-pt {
+  padding-top: 15px;
+}
+
+.fix-pb {
+  padding-bottom: 15px;
+}
+
+.fix-pl {
+  padding-left: 15px;
+}
+
+.fix-pr {
+  padding-right: 15px;
+}
+
+.fix-ma {
+  margin: 15px 15px;
+}
+
+.fix-my {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.fix-mx {
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.fix-mt {
+  margin-top: 15px;
+}
+
+.fix-mb {
+  margin-bottom: 15px;
+}
+
+.fix-ml {
+  margin-left: 15px;
+}
+
+.center-all {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.t-center {
+  text-align: center;
+}
+
+.bg-none {
+  background: none;
+}
+
+.pa-none {
+  padding: 0;
+}
+
+.fix-mr {
+  margin-right: 15px;
+}
+
+.pa-md {
+  padding: 15px;
+}
+
+.py-none {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.pb-sm {
+  padding-bottom: 8px;
+}
+
+.ma-none {
+  margin: 0;
+}
+
+.text-caption {
+  font-size:0.75rem;
+  font-weight:400;
+  line-height:1.25rem;
+  letter-spacing:0.03333em
+}
+
+.text-h6 {
+  font-size:1.25rem;
+  font-weight:500;
+  line-height:2rem;
+  letter-spacing:0.0125em
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

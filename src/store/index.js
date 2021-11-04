@@ -1,10 +1,10 @@
 import { createStore } from 'vuex'
 
-import articles from './articles'
+import news from './news'
 
 export default createStore({
   modules: {
-    articles,
+    news,
   },
 
   strict: process.env.DEBUGGING
