@@ -3,11 +3,7 @@ import SectionService from "../../services/sectionService"
 
 
 export async function createArticleFromZip({commit}, {file, sectionId}) {
-    try {
-        await ArticleService.createArticle(file, sectionId)
-    } catch (e) {
-        console.log(e);
-    }
+    await ArticleService.createArticle(file, sectionId)
 }
 
 export async function loadArticlesPage({commit}, {pageNumber, sectionId}) {

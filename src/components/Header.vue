@@ -14,12 +14,12 @@
         >
           <i class="fas fa-bars"></i>
         </button>
-        <div class="collapse navbar-collapse" id="navbarExample01">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item active">
-              <a class="nav-link" aria-current="page" @click="$router.push('/')">Главная</a>
+        <div class="collapse navbar-collapse row justify-content-center" id="navbarExample01">
+          <ul class="navbar-nav row justify-content-center" style="width: 100%">
+            <li class="nav-item active" style="width: 90px">
+              <a class="nav-link" aria-current="page"  @click="$router.push('/')">Главная</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" style="width: 200px">
               <a class="nav-link" @click="$router.push('/articleCreate')">Добавить новость</a>
             </li>
           </ul>

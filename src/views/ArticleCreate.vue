@@ -20,6 +20,12 @@
                    placeholder="Архив со статьёй" aria-label="123e" aria-describedby="button-addon2" style="border-right: none">
             <button v-on:click="submitFile" class="btn btn-outline-primary" type="button">Загрузить</button>
           </div>
+          <div v-if="isLoadFailed" style="text-align: center" class="pa-none pb-md">
+            <span style="color: #ed4956;">{{responseMessage}}</span>
+          </div>
+          <div v-else class="pa-none pb-md">
+            <span style="color: #09d02d;">{{responseMessage}}</span>
+          </div>
         </div>
       </div>
       <div id="sections-creating-container" class="ma-none pa-none bg-none col-4 bg-none" style="padding-left: 0; padding-right: 0">
@@ -55,17 +61,26 @@ export default {
     const sections = computed(()=> store.getters['news/getSections'])
     const selectedSection = ref(0);
     const sectionName = ref('');
+    const responseMessage = ref(null);
+    const isLoadFailed = ref(false);
 
     const handleFileUpload = () => {
       loadedFile.value = zipInput.value.files[0];
     }
 
-    const submitFile = () => {
+    const submitFile = async () => {
       let sectionId;
       if (selectedSection.value !== 0) {
         sectionId = selectedSection.value;
       }
-      store.dispatch('news/createArticleFromZip', {file : loadedFile.value, sectionId})
+      try {
+        await store.dispatch('news/createArticleFromZip', {file : loadedFile.value, sectionId})
+        isLoadFailed.value = false;
+        responseMessage.value = 'Статья успешно загружена'
+      } catch (e) {
+        isLoadFailed.value = true;
+        responseMessage.value = e.response.data.message;
+      }
     }
 
     const createNewSection = async (name) => {
@@ -85,6 +100,8 @@ export default {
       sections,
       selectedSection,
       sectionName,
+      isLoadFailed,
+      responseMessage,
       handleFileUpload,
       submitFile,
       createNewSection
@@ -98,9 +115,11 @@ export default {
 
 #article-loading-container {
   margin-right: 15px;
+  border-radius: 4px;
 }
 
 #sections-creating-container {
   margin-left: 15px;
+  border-radius: 4px;
 }
 </style>
