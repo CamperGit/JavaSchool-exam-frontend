@@ -4,14 +4,19 @@
       <div id="news-container" class="ma-none pa-none fix-mr">
         <template v-if="currentPage">
           <div v-for="article in currentPage.content" :key="article" class="pa-none fix-pa fix-mb cursor-pointer"
-               style="border-radius: 3px;" @click="openReadArticleDialog(article)">
+               style="border-radius: 3px;" @click="openReadArticleDialog(article)" data-bs-toggle="modal" data-bs-target="#article-info-dialog">
             <div class="pa-md bg-none article-item mb-md" style="text-align: left">
-              <span class="text-h6 pb-sm ">{{ article.title }}</span><br>
-              <span class="text-caption" v-html="article.text"></span><br>
-              <span class="text-caption cursor-pointer">Читать подробнее...</span>
+              <div class="pb-md">
+                <span class="text-h6" style="font-weight: bold">{{ article.title }}</span><br>
+              </div>
+              <div class="pb-sm"><span class="text-caption" >{{getArticleText(article)}}</span><br></div>
+              <div class="row justify-content-between">
+                <div style="width: 250px"><span>Читать подробнее...</span></div>
+                <div style="width: 90px; margin-right: 15px"><span>{{formatDate(new Date(article.dateOfCreation))}}</span></div>
+              </div>
             </div>
           </div>
-          <div class="row justify-content-between">
+          <div class="row justify-content-between pb-xs">
             <div style="width: 250px">
               <button @click="pageNumber--" type="button" class="btn btn-outline-primary" :class="currentPage.first ? 'disabled' : ''"
                       style="width: 100%">Предыдущая страница
@@ -25,13 +30,14 @@
           </div>
         </template>
       </div>
-      <div id="sections-container" :style="'height:' + (40 * sections.length) + 'px'"
+      <div id="sections-container" :style="'height:' + (34 + 18 + 56 * sections.length) + 'px'"
            class="ma-none pa-none bg-none" style="padding-left: 0; padding-right: 0">
         <div class="pa-none list-group-flush">
-          <ul class="list-group pa-none">
-            <li class="list-group-item list-group-item-action cursor-pointer active-list"
+          <ul id="section-list" class="list-group pa-none">
+            <li class="list-group-item list-group-item-action cursor-pointer"
                 :class="selectedSection.name === 'all' ? 'active' : ''" @click="selectedSection = {name: 'all'}">Все
             </li>
+            <div class="separator"/>
             <template v-for="(section) in sections" :key="section.sectionId">
               <li class="list-group-item list-group-item-action cursor-pointer"
                   :class="selectedSection.name === section.name ? 'active' : ''" @click="selectedSection = section">
@@ -39,6 +45,22 @@
               </li>
             </template>
           </ul>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="article-info-dialog" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+      <div class="modal-dialog modal-dialog-centered modal-lg"  >
+        <div class="modal-content" >
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">{{articleDialogTitle}}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" style="text-align: left">
+            <div>{{articleDialogText}}</div>
+          </div>
+          <div class="modal-footer">
+            <div>{{articleDialogDate}}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -51,22 +73,49 @@ import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {useStore} from "vuex";
 
 
+
 export default {
   name: 'Home',
-  components: {},
+  components: {
+  },
   setup() {
     const store = useStore();
     const selectedSection = ref({name: 'all'});
     const pageNumber = ref(0);
+    const sections = computed(() => store.getters['news/getSections'])
     const currentPage = computed( () => {
       const map = store.state.news.articlesPages;
-      return map.get(pageNumber.value);
+      const page = map.get(pageNumber.value);
+      console.log(page)
+      return page;
     });
-    const sections = computed(() => store.getters['news/getSections'])
+    const articleDialogTitle = ref('');
+    const articleDialogText = ref('');
+    const articleDialogDate = ref('');
 
+    const formatDate = (date) => {
+      let dd = date.getDate();
+      if (dd < 10) dd = '0' + dd;
+      let mm = date.getMonth() + 1;
+      if (mm < 10) mm = '0' + mm;
+      let yy = date.getFullYear();
+      return dd + '.' + mm + '.' + yy;
+    }
 
     const openReadArticleDialog = (article) => {
+      console.log(article)
+      articleDialogTitle.value = article.title;
+      articleDialogText.value = article.text;
+      articleDialogDate.value = formatDate(new Date(article.dateOfCreation));
+    }
 
+    const getArticleText = (article) => {
+      const text = article.text;
+      if (text.length > 1000) {
+        return text.substr(0, 1000);
+      } else {
+        return text;
+      }
     }
 
     watch(pageNumber, async (newVal) => {
@@ -110,7 +159,12 @@ export default {
       sections,
       selectedSection,
       pageNumber,
-      openReadArticleDialog
+      articleDialogTitle,
+      articleDialogText,
+      articleDialogDate,
+      openReadArticleDialog,
+      getArticleText,
+      formatDate
     }
   }
 }
@@ -123,6 +177,7 @@ export default {
   background-color: white;
 }
 
+
 #news-container {
   width: 800px;
   min-width: 800px;
@@ -130,13 +185,36 @@ export default {
 }
 
 #sections-container {
-  width: 230px;
+  width: 280px;
   border-radius: 4px;
 }
 
 .article-item {
   border-radius: 4px;
 }
+
+#section-list {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+#section-list > li.active {
+  color: black;
+  padding-left: 20px;
+  background: rgb(242, 243, 245);
+  border-left: 4px solid dodgerblue;
+  border-top: none;
+  border-bottom: none;
+  border-right: none;
+}
+
+#section-list > li {
+  border: none;
+  text-align: left;
+  padding-top: 8px ;
+  padding-bottom: 8px ;
+}
+
 
 .select-type-news {
   min-height: 10px;
@@ -174,6 +252,12 @@ export default {
 
 .container-base {
   max-width: 1600px;
+}
+
+.separator {
+  margin: 0.5rem 15px;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 </style>

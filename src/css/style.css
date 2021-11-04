@@ -101,6 +101,18 @@ body {
   padding-bottom: 8px;
 }
 
+.pb-md {
+  padding-bottom: 15px;
+}
+
+.pb-lg {
+  padding-bottom: 24px;
+}
+
+.pb-xs {
+  padding-bottom: 48px;
+}
+
 .ma-none {
   margin: 0;
 }
