@@ -84,6 +84,14 @@ body {
   padding: 15px;
 }
 
+.ma-md {
+  margin: 15px
+}
+
+.mb-md {
+  margin-bottom: 15px;
+}
+
 .py-none {
   padding-top: 0;
   padding-bottom: 0;

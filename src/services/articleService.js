@@ -12,7 +12,6 @@ class ArticleService {
                 'Content-Type' : 'multipart/form-data'
             }
         })
-        console.log(data);
     }
 
     async getArticlesPage(pageNumber) {
@@ -31,7 +30,7 @@ class ArticleService {
 
     async getArticlesPageBySection(pageNumber, sectionId) {
         try {
-            const {data} = await axios.get("/articlesBySection", {
+            const {data} = await axios.get("/articles/filterBySection", {
                 params: {
                     pageNumber,
                     sectionId

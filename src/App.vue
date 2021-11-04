@@ -19,11 +19,13 @@
 
 html {
   height: 100%;
+  background-color: rgb(238, 238, 238);
 }
 body {
   margin: 0;
   padding: 0;
   height: 100%;
+  background-color: rgb(238, 238, 238);
 }
 
 #nav {

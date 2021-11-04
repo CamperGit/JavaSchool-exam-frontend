@@ -2,26 +2,43 @@
   <div style="height: 100%">
     <div class="center-all container-base row justify-content-center" style="margin: 0 auto;">
       <div id="news-container" class="ma-none pa-none fix-mr">
-        <div v-for="article in articles" :key="article" class="pa-none fix-pa fix-mb cursor-pointer" style="border-radius: 3px;" @click="openReadArticleDialog(article)">
-          <div class="pa-md bg-none article-item" style="margin-bottom: 50px; text-align: left">
-            <span class="text-h6 pb-sm ">{{ article.title }}</span><br>
-            <span class="text-caption" v-html="article.text"></span><br>
-            <span class="text-caption cursor-pointer" >Читать подробнее...</span>
-          </div>
-        </div>
-      </div>
-      <div id="sections-container" :style="'height:' + (31 + 11 + 31 * sections.length) + 'px'" class="ma-none pa-none fix-pa bg-none">
-        <div class="py-none">
-          <template v-for="(section) in sections" :key="section.sectionId"
-          >
-<!--            <div  :active="newsTypeValue === type" :active-class="theme('active-list active-list-l', 'active-list active-list-d')" class="select-type-news" @click="newsTypeValue = type">
-              <span>{{ type.type }}</span>
-            </div>-->
-            <div>
-              <span>{{section.name}}</span>
+        <template v-if="currentPage">
+          <div v-for="article in currentPage.content" :key="article" class="pa-none fix-pa fix-mb cursor-pointer"
+               style="border-radius: 3px;" @click="openReadArticleDialog(article)">
+            <div class="pa-md bg-none article-item mb-md" style="text-align: left">
+              <span class="text-h6 pb-sm ">{{ article.title }}</span><br>
+              <span class="text-caption" v-html="article.text"></span><br>
+              <span class="text-caption cursor-pointer">Читать подробнее...</span>
             </div>
-<!--            <q-separator v-if="id === 0" style="margin: 5px 0" />-->
-          </template>
+          </div>
+          <div class="row justify-content-between">
+            <div style="width: 250px">
+              <button @click="pageNumber--" type="button" class="btn btn-outline-primary" :class="currentPage.first ? 'disabled' : ''"
+                      style="width: 100%">Предыдущая страница
+              </button>
+            </div>
+            <div style="width: 250px">
+              <button @click="pageNumber++" type="button" class="btn btn-outline-primary" :class="currentPage.last ? 'disabled' : ''"
+                      style="width: 100%">Следующая страница
+              </button>
+            </div>
+          </div>
+        </template>
+      </div>
+      <div id="sections-container" :style="'height:' + (40 * sections.length) + 'px'"
+           class="ma-none pa-none bg-none" style="padding-left: 0; padding-right: 0">
+        <div class="pa-none list-group-flush">
+          <ul class="list-group pa-none">
+            <li class="list-group-item list-group-item-action cursor-pointer active-list"
+                :class="selectedSection.name === 'all' ? 'active' : ''" @click="selectedSection = {name: 'all'}">Все
+            </li>
+            <template v-for="(section) in sections" :key="section.sectionId">
+              <li class="list-group-item list-group-item-action cursor-pointer"
+                  :class="selectedSection.name === section.name ? 'active' : ''" @click="selectedSection = section">
+                {{ section.name }}
+              </li>
+            </template>
+          </ul>
         </div>
       </div>
     </div>
@@ -30,36 +47,69 @@
 </template>
 
 <script>
-import {computed, onMounted, ref} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {useStore} from "vuex";
 
 
 export default {
   name: 'Home',
-  components: {
-  },
+  components: {},
   setup() {
     const store = useStore();
-    const selectedPage = ref(1);
-    const articles = computed(()=> {
+    const selectedSection = ref({name: 'all'});
+    const pageNumber = ref(0);
+    const currentPage = computed( () => {
       const map = store.state.news.articlesPages;
-      return map.get(selectedPage.value);
+      return map.get(pageNumber.value);
     });
-    const sections = computed(()=> store.getters['news/getSections'])
+    const sections = computed(() => store.getters['news/getSections'])
 
 
     const openReadArticleDialog = (article) => {
 
     }
 
+    watch(pageNumber, async (newVal) => {
+      const map = store.getters['news/getArticlesPage'];
+      const values = map.get(newVal);
+      if (!values) {
+        const sectionId = getSectionId();
+        await store.dispatch('news/loadArticlesPage', {pageNumber: newVal, sectionId});
+      }
+    })
+
+    const getSectionId = () => {
+      if (selectedSection.value.name !== 'all') {
+        return selectedSection.value.sectionId;
+      } else {
+        return null;
+      }
+    }
+
+    watch(selectedSection, async (val) => {
+      if (val.name === 'all') {
+        await store.dispatch('news/loadArticlesPage', {pageNumber : pageNumber.value})
+        console.log(val)
+      } else {
+        await store.dispatch('news/loadArticlesPage', {pageNumber : pageNumber.value, sectionId : val.sectionId})
+      }
+      pageNumber.value = 0;
+    })
+
     onMounted(async () => {
-      await store.dispatch('news/loadArticlesPage', {pageNumber : selectedPage.value});
+      await store.dispatch('news/loadArticlesPage', {pageNumber: pageNumber.value});
       await store.dispatch('news/getAllSections');
     })
 
+    onBeforeUnmount(()=> {
+      store.commit('news/clearArticlesMap');
+    })
+
     return {
-      articles,
+      currentPage,
       sections,
+      selectedSection,
+      pageNumber,
       openReadArticleDialog
     }
   }
@@ -106,22 +156,6 @@ export default {
   padding-right: 24px;
   padding-left: 24px;
 
-}
-
-.active-list {
-  color: black;
-  padding-left: 15px;
-}
-
-.active-list-d {
-  background: rgba(255, 255, 255, 0.1);
-  border-left: 3px solid #9a9a9a;
-  color: white;
-}
-
-.active-list-l {
-  background: rgb(242, 243, 245);
-  border-left: 3px solid dodgerblue;
 }
 
 .scroll-hidden {

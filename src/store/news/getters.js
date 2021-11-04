@@ -1,5 +1,5 @@
-export function getArticlesPage(state, numberOfPage) {
-  return state.articlesPages.get(numberOfPage);
+export function getArticlesPage(state) {
+  return state.articlesPages;
 }
 
 export function getSections(state) {

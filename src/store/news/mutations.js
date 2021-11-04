@@ -1,5 +1,5 @@
-export function addArticlesPage(state, {pageNumber, articles}) {
-  state.articlesPages.set(pageNumber, articles);
+export function addArticlesPage(state, {pageNumber, page}) {
+  state.articlesPages.set(pageNumber, page);
 }
 
 export function clearArticlesMap(state) {
