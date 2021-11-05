@@ -1,24 +1,31 @@
 # java-school-exam-frontend
+Инструкция по запуску проекта:
 
-## Project setup
+### Программные средства
+Для запуска проекта необходимо иметь следующие программные средства:
+
+- Node js 14.17.4 или выше (https://nodejs.org/en/download/)
+- Npm 6.14.14 или выше (будет установлен вместе с node js по ссылке https://nodejs.org/en/download/)
+- Среда разработки Visual Studio Code или WebStorm (Не обязательно)
+- После установки может понадобиться перезагрузить компьютер или перезапустить терминал(если он до этого был открыт)
+
+### Запуск приложения
+Для запуска приложения необходимо перейти в корневую папку проекта, например:
+```
+E:\Projects\JavaSchool\java-school-exam-frontend
+```
+и установить зависимости через командную строку(cmd/bash) командой:
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+после чего необходимо запустить dev сервер при помощи команды:
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+Запущенное приложение будет работать по адресу http://localhost:8080 и требовать для своей корректной работы запущенное серверное приложение JavaSchool-exam по адресу http://localhost:25565
 
-### Lints and fixes files
-```
-npm run lint
-```
+### Установка серверного приложения
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Чтобы установить серверное приложение, необходимо перейти по ссылке https://github.com/CamperGit/JavaSchool-exam.git и проследовать инструкции по установки из файла README.md
